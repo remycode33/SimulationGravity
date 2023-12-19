@@ -4,14 +4,14 @@ let canvas = document.querySelector("#canvas");
 let now;
 let gravityFactor = 200;
 let heigthJump = 35;
-let Yinitial = 850;
+let Yinitial = 800;
 
 let timeStartJump;
 let inJump = false;
 
 // set canvas
 canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.height = window.innerHeight * 0.9;
 
 let ctx = canvas.getContext("2d");
 console.log("🚀 ~ file: index.js:5 ~ ctx:", ctx);
