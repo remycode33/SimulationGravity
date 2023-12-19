@@ -1,6 +1,13 @@
-let old = Date.now();
-let frequence = 500;
+let initialTimer = Date.now();
+let frequence = 30;
 let canvas = document.querySelector("#canvas");
+let now;
+let gravityFactor = 80;
+let heigthJump = 20;
+
+let timeStartJump;
+let inJump = false;
+
 // set canvas
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -21,7 +28,7 @@ class Player {
   }
 }
 
-let player1 = new Player("p1", 100, { x: 50, y: 300 }, "white");
+let player1 = new Player("p1", 100, { x: 50, y: 500 }, "white");
 player1.drawPlayer();
 
 let clearCanvas = () => {
@@ -33,35 +40,73 @@ let setPositionPlayer = (player, x, y) => {
   player.position.y += y;
 };
 
-let movePlayer = (player = player1, x = 0, y = 0) => {
-  clearCanvas();
-  setPositionPlayer(player, x, y);
-  player1.drawPlayer();
+// let animeStarted = false;
+
+let movePlayer = (player, x, y) => {
+  try {
+    let timerEnterMove = Date.now();
+    let newY = y;
+    if (timerEnterMove - initialTimer >= frequence) {
+      now = timerEnterMove;
+      if (player.position.y > 500) {
+        newY = 0;
+        player.position.y = 500;
+        inJump = false;
+        console.log("first case / position y", player.position.y);
+        window.requestAnimationFrame(() => {
+          movePlayer(player, x, newY);
+        });
+      }
+      if (inJump == true) {
+        newY = jump(now);
+        console.log("2nd case");
+        window.requestAnimationFrame(() => {
+          movePlayer(player, x, newY);
+        });
+      }
+
+      setPositionPlayer(player, x, newY);
+      clearCanvas();
+      player.drawPlayer();
+
+      initialTimer = Date.now();
+      // console.log(`plus de ${frequence}`);
+      window.requestAnimationFrame(() => {
+        movePlayer(player, x, newY);
+      });
+    } else if (timerEnterMove - initialTimer < frequence) {
+      // console.log(`moins de ${frequence}`);
+      window.requestAnimationFrame(() => {
+        movePlayer(player, x, newY);
+      });
+    } else {
+      console.error("erreur dans l'exe de movePlayer");
+      throw new Error("erreur movePlayer : aucun cas valides");
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-let jump = (t, player) => {
+let jump = (now) => {
+  console.log("jumping");
   let y;
-  if (player.y >= 500) {
-    y = -t * -t;
+  let timeInJump = now - timeStartJump;
+
+  if (inJump == true) {
+    y = (gravityFactor * (timeInJump * timeInJump)) / 10 ** 6 - heigthJump;
+    // console.log("y :", y);
+  } else {
+    y = 0;
   }
   return y;
 };
 
-let durationJump = 1000;
-let durationDown = 1000;
+//##################
+addEventListener("click", () => {
+  timeStartJump = Date.now();
+  inJump = true;
+  console.log("click", timeStartJump, inJump);
+});
 
-let movePlayer1 = (player, x, y) => {
-  let now = Date.now();
-
-  if (now - old >= frequence) {
-    movePlayer(player, x, y);
-    window.requestAnimationFrame(() => movePlayer1(player, x, y));
-    console.log("option 1");
-    old = Date.now();
-  } else {
-    console.warn(new Date(old), new Date(now));
-    window.requestAnimationFrame(() => movePlayer1(player, x, y));
-  }
-};
-
-// movePlayer1(player1, 10, 0);
+movePlayer(player1, 1, 0);
