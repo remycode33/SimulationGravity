@@ -15,10 +15,28 @@
       canvas {
         background-color: black;
       }
+      .box {
+        position: absolute;
+        top: 100px;
+        left: 50px;
+        color: rgb(227, 227, 227);
+      }
+      label,
+      input {
+        margin: 8px;
+        font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        font-size: 20px;
+      }
     </style>
   </head>
   <body>
     <canvas id="canvas"></canvas>
+    <div class="box">
+      <label for="gravity">Gravity Factor</label>
+      <input name="gravity" type="range" min="10" max="350" value="200" />
+      <label for="JumpPower">Jump Strength</label>
+      <input name="JumpPower" type="range" min="4" max="45" value="35" />
+    </div>
   </body>
   <script type="text/javascript" src="index.js"></script>
 </html>

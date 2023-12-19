@@ -98,6 +98,8 @@ let jump = (now) => {
   let timeInJump = now - timeStartJump;
 
   if (inJump == true) {
+    gravityFactor = document.querySelector("input[name=gravity]").value;
+    heigthJump = document.querySelector("input[name=JumpPower]").value;
     y = (gravityFactor * (timeInJump * timeInJump)) / 10 ** 6 - heigthJump;
     // console.log("y :", y);
   } else {
