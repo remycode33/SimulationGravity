@@ -64,4 +64,4 @@ let movePlayer1 = (player, x, y) => {
   }
 };
 
-movePlayer1(player1, 10, 0);
+// movePlayer1(player1, 10, 0);
