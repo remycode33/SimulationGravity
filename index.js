@@ -2,8 +2,9 @@ let initialTimer = Date.now();
 let frequence = 30;
 let canvas = document.querySelector("#canvas");
 let now;
-let gravityFactor = 80;
-let heigthJump = 20;
+let gravityFactor = 200;
+let heigthJump = 35;
+let Yinitial = 850;
 
 let timeStartJump;
 let inJump = false;
@@ -28,7 +29,7 @@ class Player {
   }
 }
 
-let player1 = new Player("p1", 100, { x: 50, y: 500 }, "white");
+let player1 = new Player("p1", 100, { x: 50, y: Yinitial }, "white");
 player1.drawPlayer();
 
 let clearCanvas = () => {
@@ -46,11 +47,14 @@ let movePlayer = (player, x, y) => {
   try {
     let timerEnterMove = Date.now();
     let newY = y;
+    if (player.position.x >= 800) {
+      player.position.x = 0;
+    }
     if (timerEnterMove - initialTimer >= frequence) {
       now = timerEnterMove;
-      if (player.position.y > 500) {
+      if (player.position.y > Yinitial) {
         newY = 0;
-        player.position.y = 500;
+        player.position.y = Yinitial;
         inJump = false;
         console.log("first case / position y", player.position.y);
         window.requestAnimationFrame(() => {
@@ -103,10 +107,46 @@ let jump = (now) => {
 };
 
 //##################
-addEventListener("click", () => {
+addEventListener("click", (event) => {
   timeStartJump = Date.now();
   inJump = true;
+  let point = new Point(
+    10,
+    "red",
+    { x: `${event.clientX}`, y: `${event.clientY}` },
+    Date.now()
+  );
+  let interval = setInterval(() => {
+    point.drawPoint();
+  }, 10);
+  setTimeout(() => {
+    clearInterval(interval);
+  }, 250);
   console.log("click", timeStartJump, inJump);
 });
 
 movePlayer(player1, 1, 0);
+
+class Point {
+  constructor(width, color, position, birth) {
+    this.width = width;
+    this.color = color;
+    this.position = position;
+    this.birth = birth;
+    this.kill = false;
+  }
+
+  drawPoint() {
+    ctx.beginPath();
+    ctx.arc(this.position.x, this.position.y, this.width, 0, 2 * Math.PI); // Dessine un cercle complet
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  cleanPoint(time) {
+    if (time - this.birth >= 300) {
+      this.kill = yes;
+    }
+  }
+}
